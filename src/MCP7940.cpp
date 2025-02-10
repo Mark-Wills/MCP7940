@@ -53,6 +53,8 @@ static uint8_t conv2d(const char* p) {
   if ('0' <= *p && *p <= '9') { v = *p - '0'; }  // of if-then character in range
   return 10 * v + *++p - '0';
 }  // of method conv2d
+
+
 DateTime::DateTime(uint32_t t) {
   /*!
    @brief   DateTime constructor (overloaded)
@@ -877,3 +879,20 @@ bool MCP7940_Class::clearPowerFail() const {
   I2C_write(MCP7940_RTCWKDAY, readByte(MCP7940_RTCWKDAY));
   return true;
 }  // of method clearPowerFail()
+bool MCP7940_Class::getTimeDate(DateTime_t &dateTimeStuct) const
+{
+  /*!
+      @brief     Reads the current date/time from the RTC and populates the DateTime_t structure. Avoids creating a DateTime object.
+      @return    True if the RTC was read successfully, otherwise false.
+  */
+  uint8_t readBuffer[7] = {0};
+  uint8_t bytesRead = I2C_read(MCP7940_RTCSEC, readBuffer);
+  dateTimeStuct.year = bcd2int(readBuffer[6]) + 2000;
+  dateTimeStuct.month = bcd2int(readBuffer[5] & 0x1F);
+  dateTimeStuct.day = bcd2int(readBuffer[4] & 0x3F);
+  dateTimeStuct.hour = bcd2int(readBuffer[2] & 0x3F);
+  dateTimeStuct.minute = bcd2int(readBuffer[1] & 0x7F);
+  dateTimeStuct.second = bcd2int(readBuffer[0] & 0x7F);
+  dateTimeStuct.weekday = readBuffer[3] & 0x07;
+  return bytesRead == 7;
+} // of method getTimeDate()

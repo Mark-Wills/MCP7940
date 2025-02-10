@@ -178,7 +178,22 @@ const uint8_t  MCP7940_ALM0IF{3};              ///< ALM0WKDAY register
 const uint8_t  MCP7940_ALM1IF{3};              ///< ALM1WKDAY register
 const uint32_t SECS_1970_TO_2000{946684800};   ///< Seconds between year 1970 and 2000
 
-class DateTime {
+struct DateTime_t
+{
+  /*!
+    @struct DateTime_t
+    @brief  Structure to hold date and time information
+  */
+  uint8_t second;
+  uint8_t minute;
+  uint8_t hour;
+  uint8_t weekday;
+  uint8_t day;
+  uint8_t month;
+  uint16_t year;
+};
+class DateTime
+{
   /*!
     @class   DateTime
     @brief   Simple general-purpose date/time class
@@ -225,7 +240,7 @@ class DateTime {
   uint8_t hh;    ///< Internal hour value
   uint8_t mm;    ///< Internal minute value
   uint8_t ss;    ///< Internal seconds
-};               // of class DateTime definition
+}; // of class DateTime definition
 class TimeSpan {
   /*!
    @class   TimeSpan
@@ -296,6 +311,7 @@ class MCP7940_Class {
   int32_t  getPPMDeviation(const DateTime& dt) const;
   void     setSetUnixTime(uint32_t aTime);
   uint32_t getSetUnixTime() const;
+  bool getTimeDate(DateTime_t& dt) const;
 
   /*************************************************************************************************
   ** Template functions definitions are done in the header file                                   **
